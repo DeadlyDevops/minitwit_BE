@@ -8,13 +8,6 @@ namespace Minitwit_BE.Api
 {
     public class Startup
     {
-        public IConfiguration configuration { get; }
-
-        public Startup(IConfiguration configuration)
-        {
-            this.configuration = configuration;
-        }
-
         // to add services to the application container. For instance healthcheck,
         // etc.
         public void ConfigureServices(IServiceCollection services)
@@ -29,8 +22,7 @@ namespace Minitwit_BE.Api
             {
                 var folder = Environment.SpecialFolder.LocalApplicationData;
                 var path = Environment.GetFolderPath(folder);
-                var dbPath = Path.Join(
-                    path, "twit.db"); // for me it's C:\Users\<USER>\AppData\Local
+                var dbPath = Path.Join(path, "twit.db"); // for me it's C:\Users\<USER>\AppData\Local
 
                 opt.UseSqlite($"Data Source={dbPath}");
             });
@@ -38,7 +30,7 @@ namespace Minitwit_BE.Api
             {
                 options.AddPolicy(name: "_miniTwitAllowSpecificOrigins", builder =>
                 {
-                    builder.WithOrigins("http://localhost:8080")
+                    builder.WithOrigins("http://localhost:8080", "http://104.248.43.94:8080")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
@@ -60,6 +52,7 @@ namespace Minitwit_BE.Api
             app.UseCors("_miniTwitAllowSpecificOrigins");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
 
             app.UseRouting();
             app.UseMiddleware<ExceptionMiddleware>();
